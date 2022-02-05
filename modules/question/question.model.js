@@ -6,35 +6,36 @@ const QuestionSchema = new Schema({
     required: [true, 'Please provide a tour name'],
     trim: true,
   },
-  // answers: [
-  //   {
-  //     type: Schema.Types.ObjectId,
-  //     ref: 'Answer',
-  //     default: '',
-  //   },
-  // ],
-  answers: {
-    type: String,
-    default: '',
-  },
+  answers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Answer',
+    },
+  ],
+  // answers: [{
+  //   type: String,
+  //   default: '',
+  // },
   likes: {
     type: Number,
     default: 0,
   },
-  category: {
-    type: String,
-    enum: [
-      'Basic',
-      'OOP',
-      'Closures',
-      'DOM',
-      'Arrays',
-      'Strings',
-      'Promises',
-      'JavaScript',
-    ],
-    default: 'JavaScript',
-  },
+  category: [
+    {
+      type: String,
+      enum: [
+        'Basics',
+        'OOP',
+        'Closures',
+        'DOM',
+        'Arrays',
+        'Strings',
+        'Promises',
+        'JavaScript',
+      ],
+      default: 'JavaScript',
+    },
+  ],
   // user: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 

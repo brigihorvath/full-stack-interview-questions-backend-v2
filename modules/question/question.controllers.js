@@ -26,9 +26,7 @@ async function getQuestionById(req, res) {
   }
   console.log(questionId);
   try {
-    const question = await Question.findOne({ _id: questionId })
-      //   .populate('answers')
-      .lean();
+    const question = await Question.findById(questionId).populate('answers');
     res.status(200).json(question);
   } catch (err) {
     console.log('Error in backend');
@@ -53,9 +51,9 @@ async function getQuestionsByCategory(req, res) {
 async function createQuestion(req, res) {
   try {
     const question = req.body.content;
-    const answers = '';
+    const answers = [];
     const likes = 0;
-    const category = 'JavaScript';
+    const category = req.body.category;
 
     const newQuestion = await Question.create({
       question,
