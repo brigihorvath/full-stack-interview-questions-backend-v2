@@ -11,8 +11,8 @@ async function start() {
     const app = express();
 
     await connectDb();
-    middlewares(app);
     sessionConfig(app);
+    middlewares(app);
     //ROUTERS
     authRouter(app);
     questionRouter(app);

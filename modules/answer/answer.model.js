@@ -13,7 +13,7 @@ const AnswerSchema = new Schema({
   //     type: Number,
   //     default: 0,
   //   },
-  // user: { type: Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 
 module.exports = model('Answer', AnswerSchema);

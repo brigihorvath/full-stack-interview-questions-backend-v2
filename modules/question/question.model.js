@@ -25,6 +25,8 @@ const QuestionSchema = new Schema({
       type: String,
       enum: [
         'Basics',
+        'Number',
+        'Date',
         'OOP',
         'Closures',
         'DOM',
@@ -36,7 +38,7 @@ const QuestionSchema = new Schema({
       default: 'JavaScript',
     },
   ],
-  // user: { type: Schema.Types.ObjectId, ref: 'User' },
+  user: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 
 module.exports = model('Question', QuestionSchema);

@@ -7,9 +7,11 @@ function questionRouter(app) {
 
   router
     .get(ROUTES.getQuestions, controllers.getQuestions)
+    .get(ROUTES.getFavourites, controllers.getFavourites)
     .get(ROUTES.getQuestionById, controllers.getQuestionById)
     .get(ROUTES.getQuestionsByCategory, controllers.getQuestionsByCategory)
-    .post(ROUTES.createQuestion, controllers.createQuestion);
+    .post(ROUTES.createQuestion, controllers.createQuestion)
+    .post(ROUTES.addToFavourites, controllers.addToFavourites);
 
   app.use('/api', router);
 }

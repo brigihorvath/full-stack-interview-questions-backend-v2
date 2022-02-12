@@ -117,7 +117,60 @@ async function getLoggedInUser(req, res) {
       return res.status(400).json(null);
     }
     res.status(200).json(user);
-  } catch (err) {}
+  } catch (err) {
+    res.status(500).json({ error: err.messages });
+  }
 }
 
-module.exports = { signup, login, logout, getLoggedInUser };
+async function getUserDetails(req, res) {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId)
+      .populate('favourites')
+      .populate('questions')
+      .lean();
+    const detailedUser = { ...user, password: null };
+    res.status(200).json(detailedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.messages });
+  }
+}
+
+async function updateUser(req, res) {
+  const { username, email } = req.body;
+  try {
+    const user = req.session.user;
+    if (!user) {
+      return res.status(400).json(null);
+    }
+    const newUser = await User.findByIdAndUpdate(
+      user._id,
+      { username, email },
+      { new: true }
+    )
+      .populate('favourites')
+      .populate('questions')
+      .lean();
+    const userWithoutPass = {
+      email: newUser.email,
+      _id: newUser._id,
+      favourites: newUser.favourites,
+      questions: newUser.questions,
+      answers: newUser.answers,
+      username: newUser.username,
+      answeredQuestions: newUser.answeredQuestions,
+    };
+    res.status(201).json(userWithoutPass);
+  } catch (error) {
+    res.status(500).json({ error: error.messages });
+  }
+}
+
+module.exports = {
+  signup,
+  login,
+  logout,
+  getLoggedInUser,
+  getUserDetails,
+  updateUser,
+};

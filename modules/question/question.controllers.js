@@ -1,4 +1,5 @@
 const Question = require('./question.model');
+const User = require('../auth/user.model');
 const mongoose = require('mongoose');
 
 function isObjectId(id) {
@@ -8,13 +9,14 @@ function isObjectId(id) {
 //// GET ALL QUESTIONS
 
 async function getQuestions(req, res) {
-  console.log('itt');
+  //   console.log(req.session.user);
+
   try {
-    const allQuestions = await Question.find().lean();
-    res.status(200).json(allQuestions);
+    const allQuestions = await Question.find().populate('user').lean();
+    res.status(200).json(allQuestions).end();
   } catch (err) {
     res.status(400).json(err.message).end();
-    console.log('Error in backend');
+    // console.log('Error in backend');
   }
 }
 
@@ -24,12 +26,12 @@ async function getQuestionById(req, res) {
   if (!isObjectId(questionId)) {
     res.status(400).json('Id not valid').end();
   }
-  console.log(questionId);
+  //   console.log(questionId);
   try {
     const question = await Question.findById(questionId).populate('answers');
     res.status(200).json(question);
   } catch (err) {
-    console.log('Error in backend');
+    // console.log('Error in backend');
     res.status(400).json(err);
   }
 }
@@ -54,14 +56,22 @@ async function createQuestion(req, res) {
     const answers = [];
     const likes = 0;
     const category = req.body.category;
+    const user = req.session.user._id;
 
     const newQuestion = await Question.create({
       question,
       answers,
       likes,
       category,
+      user,
     });
-    // console.log(newTour);
+    const newUser = await User.findByIdAndUpdate(
+      user,
+      {
+        $push: { questions: newQuestion._id },
+      },
+      { new: true }
+    );
     res.status(201).json({
       status: 'success',
       data: {
@@ -70,7 +80,34 @@ async function createQuestion(req, res) {
     });
   } catch (err) {
     res.status(400).json(err.message).end();
-    console.log(err.message);
+    // console.log(err.message);
+  }
+}
+
+async function addToFavourites(req, res) {
+  const { questionId } = req.body;
+  try {
+    const newQuestion = await Question.findByIdAndUpdate(questionId, {
+      $inc: { likes: 1 },
+    });
+    const newUser = await User.findByIdAndUpdate(req.session.user._id, {
+      $push: { favourites: newQuestion._id },
+    });
+    // console.log(newQuestion);
+    res.status(201).json({ status: 'success', data: { content: newQuestion } });
+  } catch (err) {
+    res.status(400).json(err.message).end();
+  }
+}
+
+async function getFavourites(req, res) {
+  try {
+    // console.log('userId:', userId);
+    const user = await User.findById(req.session.user._id).select('favourites');
+    // console.log('getFav:', user);
+    res.status(201).json({ status: 'success', data: { content: user } });
+  } catch (err) {
+    res.status(400).json(err.message).end();
   }
 }
 
@@ -79,4 +116,6 @@ module.exports = {
   getQuestionById,
   getQuestionsByCategory,
   createQuestion,
+  addToFavourites,
+  getFavourites,
 };

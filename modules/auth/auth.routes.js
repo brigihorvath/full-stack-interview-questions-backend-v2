@@ -9,7 +9,9 @@ function authRouter(app) {
     .post(ROUTES.signup, controllers.signup)
     .post(ROUTES.login, controllers.login)
     .post(ROUTES.logout, controllers.logout)
-    .get(ROUTES.isLoggedIn, controllers.getLoggedInUser);
+    .get(ROUTES.getUserDetails, controllers.getUserDetails)
+    .get(ROUTES.isLoggedIn, controllers.getLoggedInUser)
+    .post(ROUTES.updateUser, controllers.updateUser);
 
   app.use('/api', router);
 }

@@ -1,5 +1,6 @@
 const Answer = require('./answer.model');
 const Question = require('../question/question.model');
+const User = require('../auth/user.model');
 const mongoose = require('mongoose');
 
 function isObjectId(id) {
@@ -10,17 +11,26 @@ function isObjectId(id) {
 
 async function createAnswer(req, res) {
   const { questionId } = req.query;
-  console.log(questionId);
   if (!isObjectId(questionId)) console.log(`not object is`);
   try {
     const answer = req.body.content;
+    const user = req.session.user;
+    console.log(user._id);
 
     const newAnswer = await Answer.create({
       answer,
+      user,
     });
     console.log(newAnswer);
     const newQuestion = await Question.findByIdAndUpdate(
       questionId,
+      {
+        $push: { answers: newAnswer._id },
+      },
+      { new: true }
+    );
+    const newUser = await User.findByIdAndUpdate(
+      user._id,
       {
         $push: { answers: newAnswer._id },
       },
