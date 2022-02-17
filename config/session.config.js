@@ -14,7 +14,7 @@ function sessionConfig(app) {
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365,
-        sameSite: false,
+        sameSite: isProduction ? 'none' : 'lax',
         secure: NODE_ENV === 'production',
       },
     })
