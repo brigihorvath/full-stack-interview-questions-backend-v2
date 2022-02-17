@@ -65,6 +65,7 @@ async function createQuestion(req, res) {
       category,
       user,
     });
+    console.log('newQuestion:', newQuestion);
     const newUser = await User.findByIdAndUpdate(
       user,
       {
@@ -72,6 +73,8 @@ async function createQuestion(req, res) {
       },
       { new: true }
     );
+    console.log('newUser', newUser);
+
     res.status(201).json({
       status: 'success',
       data: {
@@ -80,7 +83,7 @@ async function createQuestion(req, res) {
     });
   } catch (err) {
     res.status(400).json(err.message).end();
-    // console.log(err.message);
+    console.log(err.message);
   }
 }
 
