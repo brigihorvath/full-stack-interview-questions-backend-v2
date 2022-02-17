@@ -7,7 +7,8 @@ function sessionConfig(app) {
   app.use(
     session({
       secret: SESSION_SECRET,
-      resave: false,
+      resave: true,
+      // resave: false,
       saveUninitialized: true,
       store: MongoStore.create({
         mongoUrl: MONGODB_URI,
