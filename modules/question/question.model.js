@@ -28,6 +28,8 @@ const QuestionSchema = new Schema({
         'Number',
         'Date',
         'OOP',
+        'Functions',
+        'Variables',
         'Closures',
         'DOM',
         'Arrays',
