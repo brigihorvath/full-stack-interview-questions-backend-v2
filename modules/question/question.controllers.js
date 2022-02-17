@@ -56,7 +56,6 @@ async function createQuestion(req, res) {
     const answers = [];
     const likes = 0;
     const category = req.body.category;
-    if (!req.session.user) throw new Error('no session');
     const user = req.session.user._id;
 
     const newQuestion = await Question.create({
@@ -84,7 +83,12 @@ async function createQuestion(req, res) {
     });
   } catch (err) {
     res.status(400).json(err.message).end();
-    console.log(err.message);
+    console.log(
+      'Error message:',
+      err.message,
+      'Session user : ',
+      req.session.user
+    );
   }
 }
 
