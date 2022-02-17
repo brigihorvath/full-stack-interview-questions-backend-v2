@@ -56,6 +56,7 @@ async function createQuestion(req, res) {
     const answers = [];
     const likes = 0;
     const category = req.body.category;
+    if (!req.session.user) throw new Error('no session');
     const user = req.session.user._id;
 
     const newQuestion = await Question.create({
@@ -65,7 +66,7 @@ async function createQuestion(req, res) {
       category,
       user,
     });
-    console.log('newQuestion:', newQuestion);
+
     const newUser = await User.findByIdAndUpdate(
       user,
       {
