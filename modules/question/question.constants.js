@@ -7,4 +7,5 @@ module.exports = {
   updateQuestion: '/questions/:questionId',
   deleteQuestion: '/questions/:questionId',
   addToFavourites: '/questions/favourites',
+  removeFromFavourites: '/questions/removeFavourites',
 };

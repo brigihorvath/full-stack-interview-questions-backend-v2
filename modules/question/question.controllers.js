@@ -92,6 +92,22 @@ async function createQuestion(req, res) {
   }
 }
 
+async function removeFromFavourites(req, res) {
+  const { questionId } = req.body;
+  try {
+    const newQuestion = await Question.findByIdAndUpdate(questionId, {
+      $inc: { likes: -1 },
+    });
+    const newUser = await User.findByIdAndUpdate(req.session.user._id, {
+      $pull: { favourites: newQuestion._id },
+    });
+    // console.log(newQuestion);
+    res.status(201).json({ status: 'success', data: { content: newQuestion } });
+  } catch (err) {
+    res.status(400).json(err.message).end();
+  }
+}
+
 async function addToFavourites(req, res) {
   const { questionId } = req.body;
   try {
@@ -126,4 +142,5 @@ module.exports = {
   createQuestion,
   addToFavourites,
   getFavourites,
+  removeFromFavourites,
 };

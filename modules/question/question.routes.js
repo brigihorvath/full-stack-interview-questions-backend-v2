@@ -11,7 +11,8 @@ function questionRouter(app) {
     .get(ROUTES.getQuestionById, controllers.getQuestionById)
     .get(ROUTES.getQuestionsByCategory, controllers.getQuestionsByCategory)
     .post(ROUTES.createQuestion, controllers.createQuestion)
-    .post(ROUTES.addToFavourites, controllers.addToFavourites);
+    .post(ROUTES.addToFavourites, controllers.addToFavourites)
+    .post(ROUTES.removeFromFavourites, controllers.removeFromFavourites);
 
   app.use('/api', router);
 }
