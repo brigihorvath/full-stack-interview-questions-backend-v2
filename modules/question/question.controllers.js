@@ -1,5 +1,6 @@
 const Question = require('./question.model');
 const User = require('../auth/user.model');
+const Answer = require('../answer/answer.model');
 const mongoose = require('mongoose');
 
 function isObjectId(id) {
@@ -135,6 +136,88 @@ async function getFavourites(req, res) {
   }
 }
 
+async function deleteQuestion(req, res) {
+  const { questionId } = req.params;
+  try {
+    console.log(questionId);
+    // delete the answers from the users
+    const data = await Question.findById(questionId).select('answers');
+    // console.log('answers:', data.answers);
+
+    // delete answers from upvoted/downvoted
+    await User.updateMany(
+      { upVotedAnswers: { $in: data?.answers } },
+      {
+        $pull: { upVotedAnswers: { $in: data?.answers } },
+      },
+      { new: true }
+    );
+
+    await User.updateMany(
+      { downVotedAnswers: { $in: data?.answers } },
+      {
+        $pull: { downVotedAnswers: { $in: data?.answers } },
+      },
+      { new: true }
+    );
+
+    await User.updateMany(
+      { answers: { $in: data?.answers } },
+      {
+        $pull: { answers: { $in: data?.answers } },
+      },
+      { new: true }
+    );
+
+    // delete all the answers for the question
+    await Answer.deleteMany({ _id: { $in: data?.answers } });
+    // delete question from answered questions
+    await User.updateMany(
+      { answeredQuestions: questionId },
+      {
+        $pull: { answeredQuestions: questionId },
+      },
+      { new: true }
+    );
+    // delete question from favourites
+    await User.updateMany(
+      { favourites: questionId },
+      {
+        $pull: { favourites: questionId },
+      },
+      { new: true }
+    );
+    // delete the question from the user
+    await User.findOneAndUpdate(
+      { questions: questionId },
+      {
+        $pull: { questions: questionId },
+      },
+      { new: true }
+    );
+    // delete Question
+
+    await Question.findByIdAndDelete(questionId);
+    res.status(200).json({ status: 'success', data: { content: data } });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err.message).end();
+  }
+}
+
+async function getRandomQuestion(req, res) {
+  try {
+    const allQuestions = await Question.find().populate('answers').lean();
+    const randomNumId = Math.floor(Math.random() * allQuestions.length);
+    const randomQuestion = allQuestions[randomNumId];
+    console.log(randomNumId);
+    res.status(200).json(randomQuestion).end();
+  } catch (err) {
+    res.status(400).json(err.message).end();
+    // console.log('Error in backend');
+  }
+}
+
 module.exports = {
   getQuestions,
   getQuestionById,
@@ -143,4 +226,6 @@ module.exports = {
   addToFavourites,
   getFavourites,
   removeFromFavourites,
+  deleteQuestion,
+  getRandomQuestion,
 };

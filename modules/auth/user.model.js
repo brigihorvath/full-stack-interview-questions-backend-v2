@@ -29,6 +29,8 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'user'],
     default: 'user',
   },
+  upVotedAnswers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Answer' }],
+  downVotedAnswers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Answer' }],
 });
 
 module.exports = mongoose.model('User', userSchema);

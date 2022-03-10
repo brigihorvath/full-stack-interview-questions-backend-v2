@@ -14,6 +14,7 @@ const AnswerSchema = new Schema({
   //     default: 0,
   //   },
   user: { type: Schema.Types.ObjectId, ref: 'User' },
+  votes: { type: Number },
 });
 
 module.exports = model('Answer', AnswerSchema);

@@ -10,9 +10,11 @@ function questionRouter(app) {
     .get(ROUTES.getFavourites, controllers.getFavourites)
     .get(ROUTES.getQuestionById, controllers.getQuestionById)
     .get(ROUTES.getQuestionsByCategory, controllers.getQuestionsByCategory)
+    .get(ROUTES.getRandomQuestion, controllers.getRandomQuestion)
     .post(ROUTES.createQuestion, controllers.createQuestion)
     .post(ROUTES.addToFavourites, controllers.addToFavourites)
-    .post(ROUTES.removeFromFavourites, controllers.removeFromFavourites);
+    .post(ROUTES.removeFromFavourites, controllers.removeFromFavourites)
+    .post(ROUTES.deleteQuestion, controllers.deleteQuestion);
 
   app.use('/api', router);
 }

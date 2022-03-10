@@ -5,8 +5,10 @@ const express = require('express');
 function answerRouter(app) {
   const router = express.Router();
 
-  router.post(ROUTES.createAnswer, controllers.createAnswer);
-
+  router
+    .post(ROUTES.createAnswer, controllers.createAnswer)
+    .post(ROUTES.upvoteAnswer, controllers.upvoteAnswer)
+    .post(ROUTES.downvoteAnswer, controllers.downvoteAnswer);
   app.use('/api', router);
 }
 
