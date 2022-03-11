@@ -13,7 +13,9 @@ async function getQuestions(req, res) {
   //   console.log(req.session.user);
 
   try {
-    const allQuestions = await Question.find().populate('user').lean();
+    const allQuestions = await Question.find({}, null, { sort: { likes: -1 } })
+      .populate('user')
+      .lean();
     res.status(200).json(allQuestions).end();
   } catch (err) {
     res.status(400).json(err.message).end();
@@ -215,6 +217,13 @@ async function getRandomQuestion(req, res) {
   } catch (err) {
     res.status(400).json(err.message).end();
     // console.log('Error in backend');
+  }
+}
+
+async function updateQuestion(req, res) {
+  try {
+  } catch (err) {
+    res.status(400).json(err.message).end();
   }
 }
 
